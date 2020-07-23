@@ -6,6 +6,15 @@ public class KdTree {
     private int size;
     private Node root;
     private class Node {
+        public Node(Node parent, Point2D point){
+            this.parent=parent;
+            this.point=point;
+            this.height=parent.height+1;
+            this.lson=null;
+            this.rson=null;
+        }
+        public void LS(Node lson){this.lson=lson;}
+        public void RS(Node rson){this.rson=rson;}
         private Node parent;
         private Node lson;
         private Node rson;
@@ -17,21 +26,40 @@ public class KdTree {
         this.size=0;
         this.root=null;
     }
-    // construct an empty set of points
+
     public boolean isEmpty()
     {
         return this.size==0;
     }
-    // is the set empty?
+
     public int size()
     {
         return this.size;
     }
-    // number of points in the set
+
     public void insert(Point2D p)
     {
         if(p==null){throw new IllegalArgumentException("Null argument");}
-        set.add(p);
+        if(!this.contains(p))
+        {
+            Node current=this.root;
+            while(current!=null || !current.point.equals(p))
+            {
+                Point2D curr = current.point;
+                if(current.height%2==0)
+                {
+                    if(curr.y()>p.y()){current=current.lson;
+                        if(curr.y()<p.y()){current=current.rson;}
+                    }
+                }
+                if(current.height%2==1)
+                {
+                    if(curr.x()>p.x()){current=current.lson;
+                        if(curr.x()<p.x()){current=current.rson;}
+                    }
+                }
+            }
+        }
     }
     // add the point to the set (if it is not already in the set)
     public boolean contains(Point2D p)
@@ -55,6 +83,7 @@ public class KdTree {
                 }
             }
         }
+        return false;
     }
     // does the set contain point p?
     public void draw()
