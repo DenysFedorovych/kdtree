@@ -19,8 +19,22 @@ public class KdTree {
         public void RS(Node rson){this.rson=rson;}
         public void draw()
         {
+            if(this.parent==null){StdDraw.setPenColor(255,0,0);
+            Point2D a = new Point2D(this.point.x(),0);
+            a.drawTo(new Point2D(this.point.x(),1));}
             if(this.height%2==0){
-
+                StdDraw.setPenColor(0,0,255);
+                if(this.parent.lson==this){Point2D a = new Point2D(0,this.point.y());
+                a.drawTo(new Point2D(this.parent.point.x(),this.point.y()));}
+                if(this.parent.rson==this){Point2D a = new Point2D(1,this.point.y());
+                    a.drawTo(new Point2D(this.parent.point.x(),this.point.y()));}
+            }
+            if(this.height%2==1){
+                StdDraw.setPenColor(255,0,0);
+                if(this.parent.lson==this){Point2D a = new Point2D(this.point.x(),0);
+                    a.drawTo(new Point2D(this.point.x(),this.parent.point.y()));}
+                if(this.parent.rson==this){Point2D a = new Point2D(this.point.x(),1);
+                    a.drawTo(new Point2D(this.point.x(),this.parent.point.y()));}
             }
         }
         private Node parent;
