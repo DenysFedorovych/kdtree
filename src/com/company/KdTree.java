@@ -2,6 +2,8 @@ package com.company;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
+
 public class KdTree {
     private int size;
     private Node root;
@@ -15,11 +17,17 @@ public class KdTree {
         }
         public void LS(Node lson){this.lson=lson;}
         public void RS(Node rson){this.rson=rson;}
+        public void draw()
+        {
+            if(this.height%2==0){
+
+            }
+        }
         private Node parent;
         private Node lson;
         private Node rson;
         private Point2D point;
-        private int height;
+        public int height;
     }
     public KdTree()
     {
@@ -40,26 +48,32 @@ public class KdTree {
     public void insert(Point2D p)
     {
         if(p==null){throw new IllegalArgumentException("Null argument");}
+        if(this.size==0){this.root=new Node(null,p); this.root.height=1;}
         if(!this.contains(p))
         {
             Node current=this.root;
-            while(current!=null || !current.point.equals(p))
+            boolean last = true;
+            while(current!=null)
             {
                 Point2D curr = current.point;
                 if(current.height%2==0)
                 {
-                    if(curr.y()>p.y()){current=current.lson;
-                        if(curr.y()<p.y()){current=current.rson;}
+                    if(curr.y()>p.y()){current=current.lson; last=true;
+                        if(curr.y()<p.y()){current=current.rson; last=false;}
                     }
                 }
                 if(current.height%2==1)
                 {
-                    if(curr.x()>p.x()){current=current.lson;
-                        if(curr.x()<p.x()){current=current.rson;}
+                    if(curr.x()>p.x()){current=current.lson;last=true;
+                        if(curr.x()<p.x()){current=current.rson;last=false;}
                     }
                 }
             }
+            if(last)
+            {current.parent.LS(new Node(current.parent,p));}
+            else{current.parent.RS(new Node(current.parent,p));}
         }
+        this.size++;
     }
     // add the point to the set (if it is not already in the set)
     public boolean contains(Point2D p)
@@ -88,8 +102,7 @@ public class KdTree {
     // does the set contain point p?
     public void draw()
     {
-        for(Point2D each : set)
-        {each.draw();}
+        Node current = this.root;
     }
     // draw all points to standard draw
     public Iterable<Point2D> range(RectHV rect)
