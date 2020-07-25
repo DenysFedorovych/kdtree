@@ -5,77 +5,133 @@ import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 public class KdTree {
-    private int size;
-    private Node root;
+
+    //             NODE CLASS
+
     private class Node {
-        public Node(Node parent, Point2D point){
-            this.parent=parent;
-            this.point=point;
-            this.height=parent.height+1;
-            this.lson=null;
-            this.rson=null;
-        }
-        public void LS(Node lson){this.lson=lson;}
-        public void RS(Node rson){this.rson=rson;}
-        public void draw()
-        {
-            if(this.parent==null){StdDraw.setPenColor(255,0,0);
-            Point2D a = new Point2D(this.point.x(),0);
-            a.drawTo(new Point2D(this.point.x(),1));}
-            if(this.height%2==0){
-                StdDraw.setPenColor(0,0,255);
-                if(this.parent.lson==this){Point2D a = new Point2D(0,this.point.y());
-                a.drawTo(new Point2D(this.parent.point.x(),this.point.y()));}
-                if(this.parent.rson==this){Point2D a = new Point2D(1,this.point.y());
-                    a.drawTo(new Point2D(this.parent.point.x(),this.point.y()));}
-            }
-            if(this.height%2==1){
-                StdDraw.setPenColor(255,0,0);
-                if(this.parent.lson==this){Point2D a = new Point2D(this.point.x(),0);
-                    a.drawTo(new Point2D(this.point.x(),this.parent.point.y()));}
-                if(this.parent.rson==this){Point2D a = new Point2D(this.point.x(),1);
-                    a.drawTo(new Point2D(this.point.x(),this.parent.point.y()));}
-            }
-        }
-        public void superdraw()
-        {
-            this.draw();
-            if(this.lson!=null){lson.superdraw();}
-            if(this.rson!=null){rson.superdraw();}
-        }
-        public void search(RectHV rect, ArrayList<Point2D> arr)
-        {
-            if(this.height%2==1&&this!=null)
-            {
-                if(rect.xmax()<this.point.x()){this.lson.search(rect,arr);}
-                else{
-                    if(rect.xmin()>this.point.x()){this.rson.search(rect,arr);}
-                    else{
-                        if(rect.contains(this.point)) {arr.add(this.point);}
-                        this.lson.search(rect,arr);
-                        this.rson.search(rect,arr);
-                    }
-                }
-            }
-            if(this.height%2==0&&this!=null)
-            {
-                if(rect.ymax()<this.point.y()){this.lson.search(rect,arr);}
-                else{
-                    if(rect.ymin()>this.point.y()){this.rson.search(rect,arr);}
-                    else{
-                        if(rect.contains(this.point)) {arr.add(this.point);}
-                        this.lson.search(rect,arr);
-                        this.rson.search(rect,arr);
-                    }
-                }
-            }
-        }
         private Node parent;
         private Node lson;
         private Node rson;
         private Point2D point;
         public int height;
+
+        public Node(Node parent, Point2D point) {
+            this.parent = parent;
+            this.point = point;
+            this.height = parent.height + 1;
+            this.lson = null;
+            this.rson = null;
+        }
+
+        public void LS(Node lson) {
+            this.lson = lson;
+        }
+
+        public void RS(Node rson) {
+            this.rson = rson;
+        }
+
+        public void draw() {
+            if (this.height % 2 == 0) {
+                StdDraw.setPenColor(0, 0, 255);
+                Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
+                a.drawTo(new Point2D(this.lastrect().xmax(),this.lastrect().ymin()));
+            }
+            if (this.height % 2 == 1) {
+                StdDraw.setPenColor(255, 0, 0);
+                Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
+                a.drawTo(new Point2D(this.lastrect().xmin(),this.lastrect().ymax()));
+            }
+        }
+
+        public void superdraw() {
+            this.draw();
+            if (this.lson != null) {
+                lson.superdraw();
+            }
+            if (this.rson != null) {
+                rson.superdraw();
+            }
+        }
+
+        public void search(RectHV rect, ArrayList<Point2D> arr) {
+            if (this.height % 2 == 1 && this != null) {
+                if (rect.xmax() < this.point.x()) {
+                    this.lson.search(rect, arr);
+                } else {
+                    if (rect.xmin() > this.point.x()) {
+                        this.rson.search(rect, arr);
+                    } else {
+                        if (rect.contains(this.point)) {
+                            arr.add(this.point);
+                        }
+                        this.lson.search(rect, arr);
+                        this.rson.search(rect, arr);
+                    }
+                }
+            }
+            if (this.height % 2 == 0 && this != null) {
+                if (rect.ymax() < this.point.y()) {
+                    this.lson.search(rect, arr);
+                } else {
+                    if (rect.ymin() > this.point.y()) {
+                        this.rson.search(rect, arr);
+                    } else {
+                        if (rect.contains(this.point)) {
+                            arr.add(this.point);
+                        }
+                        this.lson.search(rect, arr);
+                        this.rson.search(rect, arr);
+                    }
+                }
+            }
+        }
+
+        public RectHV lastrect() {
+            if (this.parent == null) {
+                return new RectHV(this.point.x(), this.point.x(), 0, 1);
+            }
+            if (this.height <= 3) {
+                if (this.height % 2 == 0) {
+                    if (this.parent.lson == this) {
+                        return new RectHV(0, this.parent.point.x(), this.point.y(), this.point.y());
+                    }
+                    if (this.parent.rson == this) {
+                        return new RectHV(this.parent.point.x(), 1, this.point.y(), this.point.y());
+                    }
+                }
+                if (this.height % 2 == 1) {
+                    if (this.parent.lson == this) {
+                        return new RectHV(this.point.x(), this.point.x(), 0, this.parent.point.y());
+                    }
+                    if (this.parent.rson == this) {
+                        return new RectHV(this.point.x(), this.point.x(), this.parent.point.y(), 1);
+                    }
+                }
+            } else {
+                if (this.height % 2 == 0) {
+                    if (this.parent.parent.parent.point.x() < this.parent.point.x()) {
+                        return new RectHV(this.parent.parent.parent.point.x(), this.parent.point.x(), this.point.y(), this.point.y());
+                    } else {
+                        return new RectHV(this.parent.point.x(), this.parent.parent.parent.point.x(), this.point.y(), this.point.y());
+                    }
+                }
+                if (this.height % 2 == 1) {
+                    if (this.parent.parent.parent.point.y() < this.parent.point.y()) {
+                        return new RectHV(this.point.x(), this.point.x(), this.parent.parent.parent.point.y(), this.parent.point.y());
+                    } else {
+                        return new RectHV(this.point.x(), this.point.x(), this.parent.point.y(), this.parent.parent.parent.point.y());
+                    }
+                }
+            }
+            return null;
+        }
     }
+
+//             KDTREE CLASS
+
+    private int size;
+    private Node root;
     public KdTree()
     {
         this.size=0;
@@ -155,7 +211,8 @@ public class KdTree {
     public Iterable<Point2D> range(RectHV rect)
     {
         ArrayList<Point2D> points = new ArrayList<>();
-
+        this.root.search(rect, points);
+        return points;
     }
     // all points that are inside the rectangle (or on the boundary)
     public Point2D nearest(Point2D p)
