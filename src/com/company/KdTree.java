@@ -37,6 +37,12 @@ public class KdTree {
                     a.drawTo(new Point2D(this.point.x(),this.parent.point.y()));}
             }
         }
+        public void superdraw()
+        {
+            this.draw();
+            if(this.lson!=null){lson.superdraw();}
+            if(this.rson!=null){rson.superdraw();}
+        }
         private Node parent;
         private Node lson;
         private Node rson;
@@ -116,7 +122,7 @@ public class KdTree {
     // does the set contain point p?
     public void draw()
     {
-        Node current = this.root;
+        this.root.superdraw();
     }
     // draw all points to standard draw
     public Iterable<Point2D> range(RectHV rect)
