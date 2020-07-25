@@ -126,6 +126,13 @@ public class KdTree {
             }
             return null;
         }
+        public void nearest(Point2D a,Point2D champion)
+        {
+            if(a.distanceTo(this.point)<a.distanceTo(champion)){champion=this.point;}
+            if(this.lastrect().distanceTo(a)<a.distanceTo(champion))
+            {this.lson.nearest(a,champion);
+                this.rson.nearest(a,champion);}
+        }
     }
 
 //             KDTREE CLASS
@@ -217,14 +224,9 @@ public class KdTree {
     // all points that are inside the rectangle (or on the boundary)
     public Point2D nearest(Point2D p)
     {
-        Point2D current;
-        if(!p.equals(set.first())){current=set.first();}
-        else{current=set.last();}
-        for(Point2D each : set)
-        {
-            if(p.distanceTo(each)<p.distanceTo(current)){current=each;}
-        }
-        return current;
+        Point2D nearest = this.root.point;
+        this.root.nearest(p,nearest);
+        return nearest;
     }
     // a nearest neighbor in the set to point p; null if the set is empty
 
