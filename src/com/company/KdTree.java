@@ -43,6 +43,33 @@ public class KdTree {
             if(this.lson!=null){lson.superdraw();}
             if(this.rson!=null){rson.superdraw();}
         }
+        public void search(RectHV rect, ArrayList<Point2D> arr)
+        {
+            if(this.height%2==1&&this!=null)
+            {
+                if(rect.xmax()<this.point.x()){this.lson.search(rect,arr);}
+                else{
+                    if(rect.xmin()>this.point.x()){this.rson.search(rect,arr);}
+                    else{
+                        if(rect.contains(this.point)) {arr.add(this.point);}
+                        this.lson.search(rect,arr);
+                        this.rson.search(rect,arr);
+                    }
+                }
+            }
+            if(this.height%2==0&&this!=null)
+            {
+                if(rect.ymax()<this.point.y()){this.lson.search(rect,arr);}
+                else{
+                    if(rect.ymin()>this.point.y()){this.rson.search(rect,arr);}
+                    else{
+                        if(rect.contains(this.point)) {arr.add(this.point);}
+                        this.lson.search(rect,arr);
+                        this.rson.search(rect,arr);
+                    }
+                }
+            }
+        }
         private Node parent;
         private Node lson;
         private Node rson;
@@ -128,11 +155,7 @@ public class KdTree {
     public Iterable<Point2D> range(RectHV rect)
     {
         ArrayList<Point2D> points = new ArrayList<>();
-        for(Point2D each : set)
-        {
-            if(rect.contains(each)){points.add(each);}
-        }
-        return points;
+
     }
     // all points that are inside the rectangle (or on the boundary)
     public Point2D nearest(Point2D p)
