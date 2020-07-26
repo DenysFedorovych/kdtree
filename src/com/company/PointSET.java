@@ -1,4 +1,4 @@
-//package com.company;
+package com.company;
 import java.util.TreeSet;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.Point2D;
