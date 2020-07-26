@@ -1,4 +1,4 @@
-package com.company;
+//package com.company;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
@@ -13,12 +13,13 @@ public class KdTree {
         private Node lson;
         private Node rson;
         private Point2D point;
-        public int height;
+        public int height=0;
 
         public Node(Node parent, Point2D point) {
+            if(parent==null){this.height=1;}
+            else{this.height = parent.height + 1;}
             this.parent = parent;
             this.point = point;
-            this.height = parent.height + 1;
             this.lson = null;
             this.rson = null;
         }
@@ -155,35 +156,50 @@ public class KdTree {
         return this.size;
     }
 
-    public void insert(Point2D p)
-    {
-        if(p==null){throw new IllegalArgumentException("Null argument");}
-        if(this.size==0){this.root=new Node(null,p); this.root.height=1;}
-        if(!this.contains(p))
-        {
-            Node current=this.root;
-            boolean last = true;
-            while(current!=null)
-            {
-                Point2D curr = current.point;
-                if(current.height%2==0)
-                {
-                    if(curr.y()>p.y()){current=current.lson; last=true;
-                        if(curr.y()<p.y()){current=current.rson; last=false;}
-                    }
-                }
-                if(current.height%2==1)
-                {
-                    if(curr.x()>p.x()){current=current.lson;last=true;
-                        if(curr.x()<p.x()){current=current.rson;last=false;}
-                    }
-                }
-            }
-            if(last)
-            {current.parent.LS(new Node(current.parent,p));}
-            else{current.parent.RS(new Node(current.parent,p));}
+    public void insert(Point2D p) {
+        if (p == null) {
+            throw new IllegalArgumentException("Null argument");
         }
-        this.size++;
+        if (this.size == 0)
+        {
+            this.root = new Node(null, p);
+            this.size++;
+        }
+        else {
+            if (!this.contains(p)) {
+                Node current = this.root;
+                boolean last = true;
+                while (current != null) {
+                    Point2D curr = current.point;
+                    if (current.height % 2 == 0) {
+                        if (curr.y() > p.y()) {
+                            current = current.lson;
+                            last = true;
+                            if (curr.y() < p.y()) {
+                                current = current.rson;
+                                last = false;
+                            }
+                        }
+                    }
+                    if (current.height % 2 == 1) {
+                        if (curr.x() > p.x()) {
+                            current = current.lson;
+                            last = true;
+                            if (curr.x() < p.x()) {
+                                current = current.rson;
+                                last = false;
+                            }
+                        }
+                    }
+                }
+                if (last) {
+                    current.parent.LS(new Node(current.parent, p));
+                } else {
+                    current.parent.RS(new Node(current.parent, p));
+                }
+                this.size++;
+            }
+        }
     }
     // add the point to the set (if it is not already in the set)
     public boolean contains(Point2D p)
