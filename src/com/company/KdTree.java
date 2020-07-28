@@ -1,4 +1,4 @@
-package com.company;
+//package com.company;
 import java.util.ArrayList;
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
@@ -39,19 +39,11 @@ public class KdTree {
                 StdDraw.setPenColor(0, 0, 255);
                 Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
                 a.drawTo(new Point2D(this.lastrect().xmax(),this.lastrect().ymin()));
-                /*if(this.parent!=null){System.out.println(this.parent.point.toString() + "even" + this.point.toString());}
-                else{
-                    System.out.println("root"+this.point.toString());
-                }*/
             }
             if (this.height % 2 == 1) {
                 StdDraw.setPenColor(255, 0, 0);
                 Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
                 a.drawTo(new Point2D(this.lastrect().xmin(),this.lastrect().ymax()));
-                /*if(this.parent!=null){System.out.println(this.parent.point.toString() + "odd" + this.point.toString());}
-                else{
-                    System.out.println("root"+this.point.toString());
-                }*/
             }
             StdDraw.setPenColor(0, 0, 0);
             StdDraw.setPenRadius(0.02);
@@ -106,38 +98,42 @@ public class KdTree {
             if (this.parent == null) {
                 return new RectHV(this.point.x(), 0, this.point.x(), 1);
             }
-            if (this.height <= 3) {
-                if (this.height % 2 == 0) {
-                    if (this.parent.lson == this) {
-                        return new RectHV(0, this.point.y(), this.parent.point.x(), this.point.y());
-                    }
-                    if (this.parent.rson == this) {
-                        return new RectHV(this.parent.point.x(), this.point.y(), 1,  this.point.y());
-                    }
-                }
-                if (this.height % 2 == 1) {
-                    if (this.parent.lson == this) {
-                        return new RectHV(this.point.x(), 0, this.point.x(), this.parent.point.y());
-                    }
-                    if (this.parent.rson == this) {
-                        return new RectHV(this.point.x(), this.parent.point.y(), this.point.x(), 1);
-                    }
-                }
-            } else {
-                if (this.height % 2 == 0) {
-                    if (this.parent.parent.parent.point.x() < this.parent.point.x()) {
-                        return new RectHV(this.parent.parent.parent.point.x(), this.point.y(), this.parent.point.x(), this.point.y());
-                    } else {
-                        return new RectHV(this.parent.point.x(), this.point.y(), this.parent.parent.parent.point.x(), this.point.y());
-                    }
-                }
-                if (this.height % 2 == 1) {
-                    if (this.parent.parent.parent.point.y() < this.parent.point.y()) {
-                        return new RectHV(this.point.x(), this.parent.parent.parent.point.y(), this.point.x(), this.parent.point.y());
-                    } else {
-                        return new RectHV(this.point.x(), this.parent.point.y(), this.point.x(), this.parent.parent.parent.point.y());
-                    }
-                }
+//            if (this.height <= 3) {
+//                if (this.height % 2 == 0) {
+//                    if (this.parent.lson == this) {
+//                        return new RectHV(0, this.point.y(), this.parent.point.x(), this.point.y());
+//                    }
+//                    if (this.parent.rson == this) {
+//                        return new RectHV(this.parent.point.x(), this.point.y(), 1,  this.point.y());
+//                    }
+//                }
+//                if (this.height % 2 == 1) {
+//                    if (this.parent.lson == this) {
+//                        return new RectHV(this.point.x(), 0, this.point.x(), this.parent.point.y());
+//                    }
+//                    if (this.parent.rson == this) {
+//                        return new RectHV(this.point.x(), this.parent.point.y(), this.point.x(), 1);
+//                    }
+//                }
+//            } else {
+//                if (this.height % 2 == 0) {
+//                    if (this.parent.parent.parent.point.x() < this.parent.point.x()) {
+//                        return new RectHV(this.parent.parent.parent.point.x(), this.point.y(), this.parent.point.x(), this.point.y());
+//                    } else {
+//                        return new RectHV(this.parent.point.x(), this.point.y(), this.parent.parent.parent.point.x(), this.point.y());
+//                    }
+//                }
+//                if (this.height % 2 == 1) {
+//                    if (this.parent.parent.parent.point.y() < this.parent.point.y()) {
+//                        return new RectHV(this.point.x(), this.parent.parent.parent.point.y(), this.point.x(), this.parent.point.y());
+//                    } else {
+//                        return new RectHV(this.point.x(), this.parent.point.y(), this.point.x(), this.parent.parent.parent.point.y());
+//                    }
+//                }
+//            }
+            if(this.height%2==0)
+            {
+
             }
             return null;
         }
@@ -148,9 +144,21 @@ public class KdTree {
             {this.lson.nearest(a,champion);
                 this.rson.nearest(a,champion);}
         }
+//        public boolean highest()
+//        {
+//            Node current = this;
+//            while(current!=root)
+//            {
+//                if(current.parent.parent.rson!=this.parent)
+//            }
+//        }
     }
 
 //             KDTREE CLASS
+    private void checknull(Object a)
+    {
+        if(a==null){throw new IllegalArgumentException("Null argument");}
+    }
 
     private int size;
     private Node root;
@@ -171,7 +179,7 @@ public class KdTree {
     }
 
     public void insert(Point2D p) {
-        if (p == null) {throw new IllegalArgumentException("Null argument");}
+        this.checknull(p);
         if (this.size == 0)
         {
             this.root = new Node(null, p);
@@ -211,36 +219,30 @@ public class KdTree {
     // add the point to the set (if it is not already in the set)
     public boolean contains(Point2D p)
     {
+        this.checknull(p);
+        if(this.isEmpty()){return false;}
         Node current=this.root;
         while(true)
         {
             Point2D curr = current.point;
             if(current.height%2==0)
             {
-                if(curr.y()>p.y()){
+                if(current.point.equals(p)){return true;}
+                if(curr.y()>=p.y()){
                     if(current.lson!=null){current=current.lson; continue;}
                     else{return false;}}
                 if(curr.y()<p.y()){
                     if(current.rson!=null){current=current.rson; continue;}
                     else{return false;}}
-                if(curr.y()==p.y()){
-//                    System.out.println(curr.toString()+"   "+ p.toString());
-//                    System.out.println(curr.equals(p));
-                    if(curr.equals(p)){return true;}
-                    else{return false;}}
             }
             if(current.height%2==1)
             {
-                if(curr.x()>p.x()){
+                if(current.point.equals(p)){return true;}
+                if(curr.x()>=p.x()){
                     if(current.lson!=null){current=current.lson;}
                     else{return false;}}
                 if(curr.x()<p.x()){
                         if(current.rson!=null){current=current.rson;}
-                        else{return false;}}
-                if(curr.x()==p.x()){
-//                    System.out.println(curr.toString()+"   "+ p.toString());
-//                    System.out.println(curr.equals(p));
-                        if(curr.equals(p)){return true;}
                         else{return false;}}
             }
         }
@@ -253,16 +255,20 @@ public class KdTree {
     // draw all points to standard draw
     public Iterable<Point2D> range(RectHV rect)
     {
+        this.checknull(rect);
         ArrayList<Point2D> points = new ArrayList<>();
         this.root.search(rect, points);
-        return points;
+        if(points.isEmpty()){return null;}
+        else{return points;}
     }
     // all points that are inside the rectangle (or on the boundary)
     public Point2D nearest(Point2D p)
     {
+        this.checknull(p);
         Point2D nearest = this.root.point;
         this.root.nearest(p,nearest);
-        return nearest;
+        if(this.isEmpty()){return null;}
+        else{return nearest;}
     }
     // a nearest neighbor in the set to point p; null if the set is empty
 
