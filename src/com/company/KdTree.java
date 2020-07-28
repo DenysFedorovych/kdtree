@@ -26,10 +26,12 @@ public class KdTree {
 
         public void LS(Node lson) {
             this.lson = lson;
+           // System.out.println("This point  "+this.point.toString()+"  new LSon :  " + lson.point.toString());
         }
 
         public void RS(Node rson) {
             this.rson = rson;
+           // System.out.println("This point  "+this.point.toString()+"  new RSon :  " + rson.point.toString());
         }
 
         public void draw() {
@@ -37,11 +39,19 @@ public class KdTree {
                 StdDraw.setPenColor(0, 0, 255);
                 Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
                 a.drawTo(new Point2D(this.lastrect().xmax(),this.lastrect().ymin()));
+                /*if(this.parent!=null){System.out.println(this.parent.point.toString() + "even" + this.point.toString());}
+                else{
+                    System.out.println("root"+this.point.toString());
+                }*/
             }
             if (this.height % 2 == 1) {
                 StdDraw.setPenColor(255, 0, 0);
                 Point2D a = new Point2D(this.lastrect().xmin(),this.lastrect().ymin());
                 a.drawTo(new Point2D(this.lastrect().xmin(),this.lastrect().ymax()));
+                /*if(this.parent!=null){System.out.println(this.parent.point.toString() + "odd" + this.point.toString());}
+                else{
+                    System.out.println("root"+this.point.toString());
+                }*/
             }
             StdDraw.setPenColor(0, 0, 0);
             StdDraw.setPenRadius(0.02);
@@ -60,33 +70,33 @@ public class KdTree {
         }
 
         public void search(RectHV rect, ArrayList<Point2D> arr) {
-            if (this.height % 2 == 1 && this != null) {
-                if (rect.xmax() < this.point.x()) {
+            if (this.height % 2 == 1) {
+                if (rect.xmax() < this.point.x() && this.lson!=null) {
                     this.lson.search(rect, arr);
                 } else {
-                    if (rect.xmin() > this.point.x()) {
+                    if (rect.xmin() > this.point.x() && this.rson!=null) {
                         this.rson.search(rect, arr);
                     } else {
                         if (rect.contains(this.point)) {
                             arr.add(this.point);
                         }
-                        this.lson.search(rect, arr);
-                        this.rson.search(rect, arr);
+                        if(this.lson!=null){this.lson.search(rect, arr);}
+                        if(this.rson!=null){this.rson.search(rect, arr);}
                     }
                 }
             }
             if (this.height % 2 == 0 && this != null) {
-                if (rect.ymax() < this.point.y()) {
+                if (rect.ymax() < this.point.y() && this.lson!=null) {
                     this.lson.search(rect, arr);
                 } else {
-                    if (rect.ymin() > this.point.y()) {
+                    if (rect.ymin() > this.point.y() && this.rson!=null) {
                         this.rson.search(rect, arr);
                     } else {
                         if (rect.contains(this.point)) {
                             arr.add(this.point);
                         }
-                        this.lson.search(rect, arr);
-                        this.rson.search(rect, arr);
+                        if(this.lson!=null){this.lson.search(rect, arr);}
+                        if(this.rson!=null){this.rson.search(rect, arr);}
                     }
                 }
             }
@@ -166,37 +176,38 @@ public class KdTree {
         {
             this.root = new Node(null, p);
             this.size++;
+            //System.out.println("This point  "+p.toString()+"  is root");
         }
         else {
             if (!this.contains(p)) {
                 Node current = this.root;
+                int i=0;
                 while (true) {
                     Point2D curr = current.point;
                     if (current.height % 2 == 0) {
-                        if (curr.y() > p.y()) {
+                        if (curr.y() >= p.y()) {
                             if(current.lson==null){current.LS(new Node(current,p)); break;}
-                            else{current = current.lson;}
-                            if (curr.y() < p.y()) {
-                                if(current.rson==null){current.RS(new Node(current,p)); break;}
-                                else{current = current.rson;}
-                            }
-                        }
+                            else{current = current.lson;continue;}}
+                        if (curr.y() < p.y()) {
+                            if(current.rson==null){current.RS(new Node(current,p)); break;}
+                            else{current = current.rson;continue;}}
+
                     }
                     if (current.height % 2 == 1) {
-                        if (curr.x() > p.x()) {
+                        if (curr.x() >= p.x()) {
                             if(current.lson==null){current.LS(new Node(current,p)); break;}
-                        else{current = current.lson;}
-                            if (curr.x() < p.x()) {
-                                if(current.rson==null){current.RS(new Node(current,p)); break;}
-                                else{current = current.rson;}
-                            }
+                            else{current = current.lson;}}
+                        if (curr.x() < p.x()) {
+                            if(current.rson==null){current.RS(new Node(current,p)); break;}
+                            else{current = current.rson;}}
                         }
+                    i++;
                     }
-                }
                 this.size++;
+                }
             }
         }
-    }
+
     // add the point to the set (if it is not already in the set)
     public boolean contains(Point2D p)
     {
@@ -207,30 +218,30 @@ public class KdTree {
             if(current.height%2==0)
             {
                 if(curr.y()>p.y()){
-                    if(current.lson!=null){current=current.lson;}
-                    else{return false;}
-                    if(curr.y()<p.y()){
-                        if(current.rson!=null){current=current.rson;}
-                        else{return false;}}
-                    else{
-                        if(current.point.equals(p)){return true;}
-                        else{return false;}
-                    }
-                }
+                    if(current.lson!=null){current=current.lson; continue;}
+                    else{return false;}}
+                if(curr.y()<p.y()){
+                    if(current.rson!=null){current=current.rson; continue;}
+                    else{return false;}}
+                if(curr.y()==p.y()){
+//                    System.out.println(curr.toString()+"   "+ p.toString());
+//                    System.out.println(curr.equals(p));
+                    if(curr.equals(p)){return true;}
+                    else{return false;}}
             }
             if(current.height%2==1)
             {
                 if(curr.x()>p.x()){
                     if(current.lson!=null){current=current.lson;}
-                    else{return false;}
-                    if(curr.x()<p.x()){
+                    else{return false;}}
+                if(curr.x()<p.x()){
                         if(current.rson!=null){current=current.rson;}
                         else{return false;}}
-                    else{
-                        if(current.point.equals(p)){return true;}
-                        else{return false;}
-                    }
-                }
+                if(curr.x()==p.x()){
+//                    System.out.println(curr.toString()+"   "+ p.toString());
+//                    System.out.println(curr.equals(p));
+                        if(curr.equals(p)){return true;}
+                        else{return false;}}
             }
         }
     }
